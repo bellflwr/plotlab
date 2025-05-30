@@ -44,7 +44,8 @@ void PlotList::draw_listbox() {
         ImGuiSelectableFlags flags =
             (highlighted_item_idx == i) ? ImGuiSelectableFlags_Highlight : 0;
 
-        if (ImGui::Selectable(dir_entry.path().c_str(), is_selected, flags)) {
+        if (ImGui::Selectable(dir_entry.path().filename().c_str(), is_selected,
+                              flags)) {
             selected_item_idx = i;
             selected_item = dir_entry;
         }

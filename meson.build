@@ -7,10 +7,16 @@ project(
 )
 
 src = [
+  'src/directives.cpp',
   'src/main.cpp',
   'src/plotlist.cpp',
+  'src/plotrender/plotrender.cpp',
+  'src/plotrender/shapes.cpp',
+  'src/plotrender/editor.cpp',
   'src/point.cpp',
+  'src/pointlist.cpp',
   'src/project.cpp',
+
   'vendor/imgui-sfml/src/imgui-SFML.cpp'
 ]
 

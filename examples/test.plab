@@ -1,0 +1,42 @@
+{
+    "canvas_width": 1024,
+    "canvas_height": 1024,
+    "directives": [
+        {
+            "type": "point",
+            "dest": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "type": "point",
+            "dest": {
+                "x": 50,
+                "y": 150
+            }
+        },
+        {
+            "type": "point",
+            "dest": {
+                "x": 100,
+                "y": 100
+            }
+        },
+        {
+            "type": "bezier",
+            "h1": {
+                "x": 100,
+                "y": 200
+            },
+            "h2": {
+                "x": 200,
+                "y": 200
+            },
+            "dest": {
+                "x": 200,
+                "y": 100
+            }
+        }
+    ]
+}
