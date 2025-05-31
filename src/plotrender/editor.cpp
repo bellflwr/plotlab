@@ -6,14 +6,8 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <iostream>
+#include <SFML/Window/Keyboard.hpp>
 #include <variant>
-
-namespace {
-auto square(int num) -> int {
-    return num * num;
-}
-} // namespace
 
 namespace plotlab {
 
@@ -22,59 +16,10 @@ const int SELECT_RADIUS_SQUARED = SELECT_RADIUS * SELECT_RADIUS;
 
 void PlotRender::handle_event(const sf::Event::MouseButtonPressed* event,
                               project& proj) {
-    int closest_dist_sq = -1;
-    point* closest = nullptr;
-    for (auto& directive : proj.directives) {
-        auto* dir_v = &directive;
-        if (std::holds_alternative<point_directive>(*dir_v)) {
-            auto* dir = std::get_if<point_directive>(dir_v);
-            int dist_sq = square(event->position.x - dir->dest.x) +
-                          square(event->position.y - dir->dest.y);
-
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->dest;
-            }
-        } else if (std::holds_alternative<bezier_directive>(*dir_v)) {
-            auto* dir = std::get_if<bezier_directive>(dir_v);
-
-            int dist_sq = square(event->position.x - dir->dest.x) +
-                          square(event->position.y - dir->dest.y);
-
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->dest;
-            }
-
-            dist_sq = square(event->position.x - dir->h1.x) +
-                      square(event->position.y - dir->h1.y);
-
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->h1;
-            }
-
-            dist_sq = square(event->position.x - dir->h2.x) +
-                      square(event->position.y - dir->h2.y);
-
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->h2;
-            }
-        }
-    }
-
-    if (closest == nullptr) {
-        return;
-    }
-
-    if (closest_dist_sq <= SELECT_RADIUS_SQUARED) {
-        is_holding = true;
-        held = closest;
-
-        std::cout << closest->x << " " << closest->y << '\n';
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
+        attempt_point_create(proj, event->position);
     } else {
-        std::cout << closest_dist_sq << '\n';
+        attempt_point_move(proj, event->position);
     }
 }
 
@@ -91,4 +36,128 @@ void PlotRender::handle_event(const sf::Event::MouseMoved* event,
         held->y = event->position.y;
     }
 }
+
+void PlotRender::attempt_point_move(project& proj,
+                                    const sf::Vector2i& mouse_pos) {
+    int closest_dist_sq = -1;
+    point* closest = nullptr;
+
+    for (int i = 0; i < (int)proj.directives.size(); i++) {
+        auto* dir_v = &proj.directives.at(i);
+        if (std::holds_alternative<point_directive>(*dir_v)) {
+            auto* dir = std::get_if<point_directive>(dir_v);
+            int dist_sq = dir->dest.get_distance_squared(mouse_pos);
+
+            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+                closest_dist_sq = dist_sq;
+                closest = &dir->dest;
+            }
+        } else if (std::holds_alternative<bezier_directive>(*dir_v)) {
+            auto* dir = std::get_if<bezier_directive>(dir_v);
+
+            int dist_sq = dir->dest.get_distance_squared(mouse_pos);
+
+            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+                closest_dist_sq = dist_sq;
+                closest = &dir->dest;
+            }
+
+            dist_sq = dir->h1.get_distance_squared(mouse_pos);
+
+            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+                closest_dist_sq = dist_sq;
+                closest = &dir->h1;
+            }
+
+            dist_sq = dir->h2.get_distance_squared(mouse_pos);
+
+            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+                closest_dist_sq = dist_sq;
+                closest = &dir->h2;
+            }
+        }
+    }
+
+    if (closest == nullptr) {
+        return;
+    }
+
+    if (closest_dist_sq > SELECT_RADIUS_SQUARED) {
+        return;
+    }
+
+    is_holding = true;
+    held = closest;
+}
+
+void PlotRender::attempt_point_create(project& proj,
+                                      const sf::Vector2i& mouse_pos) {
+    int closest_dist_sq = -1;
+    point* closest = nullptr;
+    directive* closest_dir_v = nullptr;
+    int closest_idx = -1;
+
+    for (int i = 0; i < (int)proj.directives.size(); i++) {
+        auto* dir_v = &proj.directives.at(i);
+        if (std::holds_alternative<point_directive>(*dir_v)) {
+            auto* dir = std::get_if<point_directive>(dir_v);
+            int dist_sq = dir->dest.get_distance_squared(mouse_pos);
+
+            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+                closest_dist_sq = dist_sq;
+                closest = &dir->dest;
+                closest_dir_v = dir_v;
+                closest_idx = i;
+            }
+        } else if (std::holds_alternative<bezier_directive>(*dir_v)) {
+            auto* dir = std::get_if<bezier_directive>(dir_v);
+
+            int dist_sq = dir->dest.get_distance_squared(mouse_pos);
+
+            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+                closest_dist_sq = dist_sq;
+                closest = &dir->dest;
+                closest_dir_v = dir_v;
+                closest_idx = i;
+            }
+
+            dist_sq = dir->h1.get_distance_squared(mouse_pos);
+
+            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+                closest_dist_sq = dist_sq;
+                closest = &dir->h1;
+                closest_dir_v = dir_v;
+                closest_idx = i;
+            }
+
+            dist_sq = dir->h2.get_distance_squared(mouse_pos);
+
+            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+                closest_dist_sq = dist_sq;
+                closest = &dir->h2;
+                closest_dir_v = dir_v;
+                closest_idx = i;
+            }
+        }
+    }
+
+    if (closest == nullptr) {
+        return;
+    }
+
+    if (closest_dist_sq > SELECT_RADIUS_SQUARED) {
+        return;
+    }
+
+    if (std::holds_alternative<point_directive>(*closest_dir_v) ||
+        std::holds_alternative<bezier_directive>(*closest_dir_v)) {
+        auto* idk_man = &*proj.directives.insert(
+            proj.directives.begin() + closest_idx + 1,
+            point_directive{point{mouse_pos.x, mouse_pos.y}});
+
+        held = &std::get_if<point_directive>(idk_man)->dest;
+        is_holding = true;
+    }
+}
+
 } // namespace plotlab
