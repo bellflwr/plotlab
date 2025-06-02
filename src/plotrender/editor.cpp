@@ -44,7 +44,13 @@ const int SELECT_RADIUS_SQUARED = SELECT_RADIUS * SELECT_RADIUS;
 
 void PlotRender::handle_event(const sf::Event::MouseButtonPressed* event,
                               project& proj) {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
+    bool shift = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift);
+    bool ctrl = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl);
+
+    // if (ctrl) {
+    // }
+
+    if (shift) {
         attempt_point_create(proj, event->position);
     } else {
         attempt_point_move(proj, event->position);
@@ -77,17 +83,10 @@ void PlotRender::attempt_point_move(project& proj,
             try_closest_point(&dir->dest, mouse_pos, closest_dist_sq, closest);
         } else if (std::holds_alternative<bezier_directive>(*dir_v)) {
             auto* dir = std::get_if<bezier_directive>(dir_v);
-
             try_closest_point(&dir->dest, mouse_pos, closest_dist_sq, closest);
-
             try_closest_point(&dir->h1, mouse_pos, closest_dist_sq, closest);
-
             try_closest_point(&dir->h2, mouse_pos, closest_dist_sq, closest);
         }
-    }
-
-    if (closest == nullptr) {
-        return;
     }
 
     if (closest_dist_sq > SELECT_RADIUS_SQUARED) {
@@ -108,20 +107,14 @@ void PlotRender::attempt_point_create(project& proj,
         auto* dir_v = &proj.directives.at(i);
         if (std::holds_alternative<point_directive>(*dir_v)) {
             auto* dir = std::get_if<point_directive>(dir_v);
-
             try_closest_directive(&dir->dest, mouse_pos, closest_dist_sq,
                                   closest_dir_v, closest_idx, i, dir_v);
 
         } else if (std::holds_alternative<bezier_directive>(*dir_v)) {
             auto* dir = std::get_if<bezier_directive>(dir_v);
-
             try_closest_directive(&dir->dest, mouse_pos, closest_dist_sq,
                                   closest_dir_v, closest_idx, i, dir_v);
         }
-    }
-
-    if (closest_dir_v == nullptr) {
-        return;
     }
 
     if (closest_dist_sq > SELECT_RADIUS_SQUARED) {
