@@ -11,13 +11,27 @@
 #include <variant>
 
 namespace {
-void try_closest(plotlab::point* test_point, const sf::Vector2i& mouse_pos,
-                 int& closest_dist_sq, plotlab::point*& closest) {
+void try_closest_point(plotlab::point* test_point,
+                       const sf::Vector2i& mouse_pos, int& closest_dist_sq,
+                       plotlab::point*& closest) {
     int dist_sq = test_point->get_distance_squared(mouse_pos);
 
     if (closest_dist_sq > dist_sq) {
         closest_dist_sq = dist_sq;
         closest = test_point;
+    }
+}
+
+void try_closest_directive(plotlab::point* test_point,
+                           const sf::Vector2i& mouse_pos, int& closest_dist_sq,
+                           plotlab::directive*& closest_dir_v, int& closest_idx,
+                           int i, plotlab::directive* dir_v) {
+    int dist_sq = test_point->get_distance_squared(mouse_pos);
+
+    if (closest_dist_sq > dist_sq) {
+        closest_dist_sq = dist_sq;
+        closest_dir_v = dir_v;
+        closest_idx = i;
     }
 }
 } // namespace
@@ -53,42 +67,21 @@ void PlotRender::handle_event(const sf::Event::MouseMoved* event,
 void PlotRender::attempt_point_move(project& proj,
                                     const sf::Vector2i& mouse_pos) {
     int closest_dist_sq = std::numeric_limits<int>::max();
-    ;
     point* closest = nullptr;
 
     for (int i = 0; i < (int)proj.directives.size(); i++) {
         auto* dir_v = &proj.directives.at(i);
         if (std::holds_alternative<point_directive>(*dir_v)) {
             auto* dir = std::get_if<point_directive>(dir_v);
-            int dist_sq = dir->dest.get_distance_squared(mouse_pos);
-
-            if (closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->dest;
-            }
+            try_closest_point(&dir->dest, mouse_pos, closest_dist_sq, closest);
         } else if (std::holds_alternative<bezier_directive>(*dir_v)) {
             auto* dir = std::get_if<bezier_directive>(dir_v);
 
-            int dist_sq = dir->dest.get_distance_squared(mouse_pos);
+            try_closest_point(&dir->dest, mouse_pos, closest_dist_sq, closest);
 
-            if (closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->dest;
-            }
+            try_closest_point(&dir->h1, mouse_pos, closest_dist_sq, closest);
 
-            dist_sq = dir->h1.get_distance_squared(mouse_pos);
-
-            if (closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->h1;
-            }
-
-            dist_sq = dir->h2.get_distance_squared(mouse_pos);
-
-            if (closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->h2;
-            }
+            try_closest_point(&dir->h2, mouse_pos, closest_dist_sq, closest);
         }
     }
 
