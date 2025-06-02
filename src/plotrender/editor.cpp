@@ -7,7 +7,20 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <limits>
 #include <variant>
+
+namespace {
+void try_closest(plotlab::point* test_point, const sf::Vector2i& mouse_pos,
+                 int& closest_dist_sq, plotlab::point*& closest) {
+    int dist_sq = test_point->get_distance_squared(mouse_pos);
+
+    if (closest_dist_sq > dist_sq) {
+        closest_dist_sq = dist_sq;
+        closest = test_point;
+    }
+}
+} // namespace
 
 namespace plotlab {
 
@@ -39,7 +52,8 @@ void PlotRender::handle_event(const sf::Event::MouseMoved* event,
 
 void PlotRender::attempt_point_move(project& proj,
                                     const sf::Vector2i& mouse_pos) {
-    int closest_dist_sq = -1;
+    int closest_dist_sq = std::numeric_limits<int>::max();
+    ;
     point* closest = nullptr;
 
     for (int i = 0; i < (int)proj.directives.size(); i++) {
@@ -48,7 +62,7 @@ void PlotRender::attempt_point_move(project& proj,
             auto* dir = std::get_if<point_directive>(dir_v);
             int dist_sq = dir->dest.get_distance_squared(mouse_pos);
 
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+            if (closest_dist_sq > dist_sq) {
                 closest_dist_sq = dist_sq;
                 closest = &dir->dest;
             }
@@ -57,21 +71,21 @@ void PlotRender::attempt_point_move(project& proj,
 
             int dist_sq = dir->dest.get_distance_squared(mouse_pos);
 
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+            if (closest_dist_sq > dist_sq) {
                 closest_dist_sq = dist_sq;
                 closest = &dir->dest;
             }
 
             dist_sq = dir->h1.get_distance_squared(mouse_pos);
 
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+            if (closest_dist_sq > dist_sq) {
                 closest_dist_sq = dist_sq;
                 closest = &dir->h1;
             }
 
             dist_sq = dir->h2.get_distance_squared(mouse_pos);
 
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
+            if (closest_dist_sq > dist_sq) {
                 closest_dist_sq = dist_sq;
                 closest = &dir->h2;
             }
@@ -93,7 +107,6 @@ void PlotRender::attempt_point_move(project& proj,
 void PlotRender::attempt_point_create(project& proj,
                                       const sf::Vector2i& mouse_pos) {
     int closest_dist_sq = -1;
-    point* closest = nullptr;
     directive* closest_dir_v = nullptr;
     int closest_idx = -1;
 
@@ -105,7 +118,6 @@ void PlotRender::attempt_point_create(project& proj,
 
             if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
                 closest_dist_sq = dist_sq;
-                closest = &dir->dest;
                 closest_dir_v = dir_v;
                 closest_idx = i;
             }
@@ -116,32 +128,13 @@ void PlotRender::attempt_point_create(project& proj,
 
             if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
                 closest_dist_sq = dist_sq;
-                closest = &dir->dest;
-                closest_dir_v = dir_v;
-                closest_idx = i;
-            }
-
-            dist_sq = dir->h1.get_distance_squared(mouse_pos);
-
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->h1;
-                closest_dir_v = dir_v;
-                closest_idx = i;
-            }
-
-            dist_sq = dir->h2.get_distance_squared(mouse_pos);
-
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest = &dir->h2;
                 closest_dir_v = dir_v;
                 closest_idx = i;
             }
         }
     }
 
-    if (closest == nullptr) {
+    if (closest_dir_v == nullptr) {
         return;
     }
 
