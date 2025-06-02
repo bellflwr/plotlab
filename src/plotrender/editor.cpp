@@ -34,6 +34,7 @@ void try_closest_directive(plotlab::point* test_point,
         closest_idx = i;
     }
 }
+
 } // namespace
 
 namespace plotlab {
@@ -99,7 +100,7 @@ void PlotRender::attempt_point_move(project& proj,
 
 void PlotRender::attempt_point_create(project& proj,
                                       const sf::Vector2i& mouse_pos) {
-    int closest_dist_sq = -1;
+    int closest_dist_sq = std::numeric_limits<int>::max();
     directive* closest_dir_v = nullptr;
     int closest_idx = -1;
 
@@ -107,23 +108,15 @@ void PlotRender::attempt_point_create(project& proj,
         auto* dir_v = &proj.directives.at(i);
         if (std::holds_alternative<point_directive>(*dir_v)) {
             auto* dir = std::get_if<point_directive>(dir_v);
-            int dist_sq = dir->dest.get_distance_squared(mouse_pos);
 
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest_dir_v = dir_v;
-                closest_idx = i;
-            }
+            try_closest_directive(&dir->dest, mouse_pos, closest_dist_sq,
+                                  closest_dir_v, closest_idx, i, dir_v);
+
         } else if (std::holds_alternative<bezier_directive>(*dir_v)) {
             auto* dir = std::get_if<bezier_directive>(dir_v);
 
-            int dist_sq = dir->dest.get_distance_squared(mouse_pos);
-
-            if (closest_dist_sq < 0 || closest_dist_sq > dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest_dir_v = dir_v;
-                closest_idx = i;
-            }
+            try_closest_directive(&dir->dest, mouse_pos, closest_dist_sq,
+                                  closest_dir_v, closest_idx, i, dir_v);
         }
     }
 
