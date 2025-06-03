@@ -24,13 +24,11 @@ void try_closest_point(plotlab::point* test_point,
 
 void try_closest_directive(plotlab::point* test_point,
                            const sf::Vector2i& mouse_pos, int& closest_dist_sq,
-                           plotlab::directive*& closest_dir_v, int& closest_idx,
-                           int i, plotlab::directive* dir_v) {
+                           int& closest_idx, int i) {
     int dist_sq = test_point->get_distance_squared(mouse_pos);
 
     if (closest_dist_sq > dist_sq) {
         closest_dist_sq = dist_sq;
-        closest_dir_v = dir_v;
         closest_idx = i;
     }
 }
@@ -101,7 +99,6 @@ void PlotRender::attempt_point_move(project& proj,
 void PlotRender::attempt_point_create(project& proj,
                                       const sf::Vector2i& mouse_pos) {
     int closest_dist_sq = std::numeric_limits<int>::max();
-    directive* closest_dir_v = nullptr;
     int closest_idx = -1;
 
     for (int i = 0; i < (int)proj.directives.size(); i++) {
@@ -109,12 +106,12 @@ void PlotRender::attempt_point_create(project& proj,
         if (std::holds_alternative<point_directive>(*dir_v)) {
             auto* dir = std::get_if<point_directive>(dir_v);
             try_closest_directive(&dir->dest, mouse_pos, closest_dist_sq,
-                                  closest_dir_v, closest_idx, i, dir_v);
+                                  closest_idx, i);
 
         } else if (std::holds_alternative<bezier_directive>(*dir_v)) {
             auto* dir = std::get_if<bezier_directive>(dir_v);
             try_closest_directive(&dir->dest, mouse_pos, closest_dist_sq,
-                                  closest_dir_v, closest_idx, i, dir_v);
+                                  closest_idx, i);
         }
     }
 
@@ -122,15 +119,12 @@ void PlotRender::attempt_point_create(project& proj,
         return;
     }
 
-    if (std::holds_alternative<point_directive>(*closest_dir_v) ||
-        std::holds_alternative<bezier_directive>(*closest_dir_v)) {
-        auto* idk_man = &*proj.directives.insert(
-            proj.directives.begin() + closest_idx + 1,
-            point_directive{point{mouse_pos.x, mouse_pos.y}});
+    auto* idk_man = &*proj.directives.insert(
+        proj.directives.begin() + closest_idx + 1,
+        point_directive{point{mouse_pos.x, mouse_pos.y}});
 
-        held = &std::get_if<point_directive>(idk_man)->dest;
-        is_holding = true;
-    }
+    held = &std::get_if<point_directive>(idk_man)->dest;
+    is_holding = true;
 }
 
 } // namespace plotlab
