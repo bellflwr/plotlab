@@ -28,10 +28,8 @@ class PlotRender {
     void draw_circle(sf::RenderWindow& window, int x, int y);
     void draw_circle(sf::RenderWindow& window, int x, int y, sf::Color color);
     void draw_line(sf::RenderWindow& window, int ax, int ay, int bx, int by);
-    void draw_line(sf::RenderWindow& window, int ax, int ay, int bx, int by,
-                   sf::Color color);
-    void draw_arrow(sf::RenderWindow& window, int ax, int ay, int bx, int by,
-                    sf::Color color);
+    void draw_line(sf::RenderWindow& window, int ax, int ay, int bx, int by, sf::Color color);
+    void draw_arrow(sf::RenderWindow& window, int ax, int ay, int bx, int by, sf::Color color);
 
     void attempt_point_move(project& proj, const sf::Vector2i& mouse_pos);
     void attempt_point_create(project& proj, const sf::Vector2i& mouse_pos);
@@ -45,10 +43,8 @@ class PlotRender {
     void render_draw_dir(sf::RenderWindow& window, draw_directive& dir);
     void render_point_dir(sf::RenderWindow& window, point_directive& dir);
     void render_bezier_dir(sf::RenderWindow& window, bezier_directive& dir);
-    void handle_event(const sf::Event::MouseButtonPressed* event,
-                      project& proj);
-    void handle_event(const sf::Event::MouseButtonReleased* event,
-                      project& proj);
+    void handle_event(const sf::Event::MouseButtonPressed* event, project& proj);
+    void handle_event(const sf::Event::MouseButtonReleased* event, project& proj);
     void handle_event(const sf::Event::MouseMoved* event, project& proj);
 };
 

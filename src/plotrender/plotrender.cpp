@@ -11,12 +11,11 @@
 namespace plotlab {
 const int POINT_RADIUS = 3.F;
 const int POINT_OUTLINE_THICKNESS = 1.F;
-const int BEZIER_SUBDIVS = 10;
+const int BEZIER_SUBDIVS = 20;
 const sf::Color HANDLE_COLOR = sf::Color{100, 100, 100};
 
 PlotRender::PlotRender() {
-    line = {sf::Vertex{sf::Vector2f(0.F, 0.F)},
-            sf::Vertex{sf::Vector2f(0.F, 0.F)}};
+    line = {sf::Vertex{sf::Vector2f(0.F, 0.F)}, sf::Vertex{sf::Vector2f(0.F, 0.F)}};
 
     circle.setRadius(POINT_RADIUS);
     circle.setFillColor(sf::Color::Transparent);
@@ -48,13 +47,11 @@ void PlotRender::render_directive(sf::RenderWindow& window, directive& dir) {
     }
 }
 
-void PlotRender::render_draw_dir(sf::RenderWindow& /*window*/,
-                                 draw_directive& dir) {
+void PlotRender::render_draw_dir(sf::RenderWindow& /*window*/, draw_directive& dir) {
     is_down = dir.draw;
 }
 
-void PlotRender::render_point_dir(sf::RenderWindow& window,
-                                  point_directive& dir) {
+void PlotRender::render_point_dir(sf::RenderWindow& window, point_directive& dir) {
     draw_point(window, &dir.dest);
 
     if (!is_down) {
@@ -70,8 +67,7 @@ void PlotRender::render_point_dir(sf::RenderWindow& window,
     pos_y = dir.dest.y;
 }
 
-void PlotRender::render_bezier_dir(sf::RenderWindow& window,
-                                   bezier_directive& dir) {
+void PlotRender::render_bezier_dir(sf::RenderWindow& window, bezier_directive& dir) {
     if (!is_down) {
         pos_x = dir.dest.x;
         pos_y = dir.dest.y;
@@ -96,8 +92,7 @@ void PlotRender::render_bezier_dir(sf::RenderWindow& window,
         if (i < BEZIER_SUBDIVS) {
             draw_line(window, pos_a.x, pos_a.y, pos_b.x, pos_b.y);
         } else {
-            draw_arrow(window, pos_a.x, pos_a.y, pos_b.x, pos_b.y,
-                       sf::Color::White);
+            draw_arrow(window, pos_a.x, pos_a.y, pos_b.x, pos_b.y, sf::Color::White);
         }
 
         pos_a.x = pos_b.x;

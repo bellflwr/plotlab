@@ -30,4 +30,4 @@ class PlotList {
 };
 } // namespace plotlab
 
-#endif
+#endif /* PLOTLIST_H */

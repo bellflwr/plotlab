@@ -48,39 +48,33 @@ auto main() -> int {
             // catch the resize events
             if (const auto* resized = event->getIf<sf::Event::Resized>()) {
                 // update the view to the new size of the window
-                sf::FloatRect visibleArea({0.F, 0.F},
-                                          sf::Vector2f(resized->size));
+                sf::FloatRect visibleArea({0.F, 0.F}, sf::Vector2f(resized->size));
 
                 window.setView(sf::View(visibleArea));
             }
 
-            if (const auto* mouseButtonPressed =
-                    event->getIf<sf::Event::MouseButtonPressed>()) {
+            if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
                 if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
                     plotrender.handle_event(mouseButtonPressed, project);
                 }
             }
-            if (const auto* mouseButtonReleased =
-                    event->getIf<sf::Event::MouseButtonReleased>()) {
+            if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
                 if (mouseButtonReleased->button == sf::Mouse::Button::Left) {
                     plotrender.handle_event(mouseButtonReleased, project);
                 }
             }
-            if (const auto* mouseMoved =
-                    event->getIf<sf::Event::MouseMoved>()) {
+            if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
                 plotrender.handle_event(mouseMoved, project);
             }
         }
 
         ImGui::SFML::Update(window, deltaClock.restart());
 
-        ImGui::DockSpaceOverViewport(0, NULL,
-                                     ImGuiDockNodeFlags_PassthruCentralNode);
+        ImGui::DockSpaceOverViewport(0, NULL, ImGuiDockNodeFlags_PassthruCentralNode);
 
         plotlist.draw_window();
         if (plotlist.should_change_project()) {
-            plotlab::read_project_from_file(plotlist.get_open_project(),
-                                            project);
+            plotlab::read_project_from_file(plotlist.get_open_project(), project);
         }
         pointlist.draw_window(project);
         ImGui::ShowMetricsWindow();

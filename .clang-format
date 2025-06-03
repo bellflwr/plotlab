@@ -8,3 +8,4 @@ Language: Cpp
 DerivePointerAlignment: false
 PointerAlignment: Left
 AllowShortFunctionsOnASingleLine: Empty
+ColumnLimit: 120

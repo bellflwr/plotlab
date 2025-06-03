@@ -13,11 +13,9 @@ struct point {
     int y{};
 
     [[nodiscard]] auto string() const -> std::string;
-    [[nodiscard]] auto get_distance_squared(int other_x, int other_y) const
-        -> int;
+    [[nodiscard]] auto get_distance_squared(int other_x, int other_y) const -> int;
 
-    [[nodiscard]] auto get_distance_squared(const sf::Vector2i& other) const
-        -> int;
+    [[nodiscard]] auto get_distance_squared(const sf::Vector2i& other) const -> int;
 };
 
 void to_json(json& j, const point& p);
@@ -26,4 +24,4 @@ void from_json(const json& j, point& p);
 
 } // namespace plotlab
 
-#endif
+#endif /* POINT_H */

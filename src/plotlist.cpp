@@ -6,8 +6,7 @@ namespace fs = std::filesystem;
 using plotlab::PlotList;
 
 void plotlab::ensure_plot_directory() {
-    if (!fs::is_directory(plotlab::plot_directory) ||
-        !fs::exists(plotlab::plot_directory)) {
+    if (!fs::is_directory(plotlab::plot_directory) || !fs::exists(plotlab::plot_directory)) {
         fs::create_directories(plotlab::plot_directory);
     }
 }
@@ -30,10 +29,7 @@ void PlotList::reload_files() {
 }
 
 void PlotList::draw_listbox() {
-    ImGui::BeginListBox(
-        "plot_table",
-        ImVec2(-FLT_MIN,
-               (float)files.size() * ImGui::GetTextLineHeightWithSpacing()));
+    ImGui::BeginListBox("plot_table", ImVec2(-FLT_MIN, (float)files.size() * ImGui::GetTextLineHeightWithSpacing()));
 
     int highlighted_item_idx = -1;
 
@@ -41,11 +37,9 @@ void PlotList::draw_listbox() {
         auto dir_entry = files.at(i);
 
         bool is_selected = (selected_item_idx == i);
-        ImGuiSelectableFlags flags =
-            (highlighted_item_idx == i) ? ImGuiSelectableFlags_Highlight : 0;
+        ImGuiSelectableFlags flags = (highlighted_item_idx == i) ? ImGuiSelectableFlags_Highlight : 0;
 
-        if (ImGui::Selectable(dir_entry.path().filename().c_str(), is_selected,
-                              flags)) {
+        if (ImGui::Selectable(dir_entry.path().filename().c_str(), is_selected, flags)) {
             selected_item_idx = i;
             selected_item = dir_entry;
         }

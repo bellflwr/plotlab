@@ -21,8 +21,7 @@ struct bezier_directive {
     void get_point(float t, point& start, point& out);
 };
 
-using directive =
-    std::variant<draw_directive, point_directive, bezier_directive>;
+using directive = std::variant<draw_directive, point_directive, bezier_directive>;
 
 void to_json(json& j, const directive& p);
 

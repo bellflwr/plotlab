@@ -25,4 +25,4 @@ void read_project_from_file(const std::filesystem::path& path, project& dest);
 
 } // namespace plotlab
 
-#endif
+#endif /* PROJECT_H */

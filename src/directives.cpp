@@ -13,10 +13,7 @@ void to_json(json& j, const directive& d) {
         j = json{{"type", "point"}, {"dest", dir.dest}};
     } else if (std::holds_alternative<bezier_directive>(d)) {
         bezier_directive dir = std::get<bezier_directive>(d);
-        j = json{{"type", "bezier"},
-                 {"h1", dir.h1},
-                 {"h2", dir.h2},
-                 {"dest", dir.dest}};
+        j = json{{"type", "bezier"}, {"h1", dir.h1}, {"h2", dir.h2}, {"dest", dir.dest}};
     }
 };
 
@@ -79,11 +76,9 @@ auto directive_to_string(directive& p) -> std::string {
 void bezier_directive::get_point(float t, point& start, point& out) {
     float k = 1 - t;
 
-    float x = (pow(k, 3) * start.x) + (3 * pow(k, 2) * t * h1.x) +
-              (3 * k * pow(t, 2) * h2.x) + (pow(t, 3) * dest.x);
+    float x = (pow(k, 3) * start.x) + (3 * pow(k, 2) * t * h1.x) + (3 * k * pow(t, 2) * h2.x) + (pow(t, 3) * dest.x);
 
-    float y = (pow(k, 3) * start.y) + (3 * pow(k, 2) * t * h1.y) +
-              (3 * k * pow(t, 2) * h2.y) + (pow(t, 3) * dest.y);
+    float y = (pow(k, 3) * start.y) + (3 * pow(k, 2) * t * h1.y) + (3 * k * pow(t, 2) * h2.y) + (pow(t, 3) * dest.y);
 
     out.x = (int)std::round(x);
     out.y = (int)std::round(y);
