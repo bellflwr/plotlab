@@ -1,3 +1,4 @@
+import lzma
 from pathlib import Path
 
 import serial
@@ -28,11 +29,17 @@ def upload_data(proj: Project, port: serial.Serial) -> None:
 
 
 def main() -> None:
-    file = Path("/home/bellflwr/Documents/Blotter/Plots/canada.bplot")
-    arduino = serial.Serial(port="/dev/ttyACM0", baudrate=115200, timeout=0.1)
+    file = Path("/home/bellflwr/Documents/Blotter/Plots/beziertest.bplot")
 
     proj = load_project_file(file)
 
-    print(proj.directives[1])
+    with open("test.bbplot", "wb") as f:
+        for bytes_ in proj.bin_serialize():
+            f.write(bytes_)
 
-    upload_data(proj, arduino)
+    with lzma.open("test.bbplot.lzma", "wb") as f:
+        for bytes_ in proj.bin_serialize():
+            f.write(bytes_)
+
+    # arduino = serial.Serial(port="/dev/ttyACM0", baudrate=115200, timeout=0.1)
+    # upload_data(proj, arduino)
