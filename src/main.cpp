@@ -11,6 +11,7 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 #include <cstddef>
+#include <optional>
 
 const int WIDTH = 1200;
 const int HEIGHT = 600;
@@ -36,6 +37,7 @@ auto main() -> int {
     plotlab::PointList pointlist;
     plotlab::PlotRender plotrender;
     plotlab::project project;
+    std::optional<std::filesystem::path> current_project_file{};
 
     while (window.isOpen()) {
         while (const auto event = window.pollEvent()) {
@@ -66,6 +68,14 @@ auto main() -> int {
             if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
                 plotrender.handle_event(mouseMoved, project);
             }
+
+            if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+                if (keyPressed->code == sf::Keyboard::Key::S && keyPressed->control) {
+                    if (current_project_file) {
+                        plotlab::write_project_to_file(*current_project_file, project);
+                    }
+                }
+            }
         }
 
         ImGui::SFML::Update(window, deltaClock.restart());
@@ -74,6 +84,7 @@ auto main() -> int {
 
         plotlist.draw_window();
         if (plotlist.should_change_project()) {
+            current_project_file = plotlist.get_open_project().path();
             plotlab::read_project_from_file(plotlist.get_open_project(), project);
         }
         pointlist.draw_window(project);

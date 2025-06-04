@@ -49,6 +49,13 @@ void read_project_from_file(const std::filesystem::path& path, project& dest) {
     // std::cout << data << '\n';
 };
 
+void write_project_to_file(const std::filesystem::path& path, const project& proj) {
+    std::ofstream file(path);
+    json data = proj;
+
+    file << data << '\n';
+};
+
 auto project::string() -> std::string {
     std::ostringstream buf;
     buf << "project (\n";

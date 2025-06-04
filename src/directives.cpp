@@ -8,12 +8,12 @@ using std::pow;
 namespace plotlab {
 
 void to_json(json& j, const directive& d) {
-    if (std::holds_alternative<point_directive>(d)) {
-        point_directive dir = std::get<point_directive>(d);
-        j = json{{"type", "point"}, {"dest", dir.dest}};
-    } else if (std::holds_alternative<bezier_directive>(d)) {
-        bezier_directive dir = std::get<bezier_directive>(d);
-        j = json{{"type", "bezier"}, {"h1", dir.h1}, {"h2", dir.h2}, {"dest", dir.dest}};
+    if (const auto* dir = std::get_if<draw_directive>(&d)) {
+        j = json{{"type", "draw"}, {"draw", dir->draw}};
+    } else if (const auto* dir = std::get_if<point_directive>(&d)) {
+        j = json{{"type", "point"}, {"dest", dir->dest}};
+    } else if (const auto* dir = std::get_if<bezier_directive>(&d)) {
+        j = json{{"type", "bezier"}, {"h1", dir->h1}, {"h2", dir->h2}, {"dest", dir->dest}};
     }
 };
 

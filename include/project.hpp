@@ -22,6 +22,7 @@ void to_json(json& j, const project& p);
 void from_json(const json& j, project& p);
 
 void read_project_from_file(const std::filesystem::path& path, project& dest);
+void write_project_to_file(const std::filesystem::path& path, const project& proj);
 
 } // namespace plotlab
 

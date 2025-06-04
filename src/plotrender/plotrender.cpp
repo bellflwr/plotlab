@@ -1,9 +1,7 @@
 #include "plotrender.hpp"
 #include "directives.hpp"
 #include "project.hpp"
-#include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <variant>
