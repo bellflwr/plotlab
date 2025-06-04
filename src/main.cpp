@@ -1,5 +1,6 @@
 #include "imgui-SFML.h"
 #include "imgui.h"
+#include "ploteditor.hpp"
 #include "plotlist.hpp"
 #include "plotrender.hpp"
 #include "pointlist.hpp"
@@ -36,6 +37,7 @@ auto main() -> int {
     plotlab::PlotList plotlist;
     plotlab::PointList pointlist;
     plotlab::PlotRender plotrender;
+    plotlab::PlotEditor ploteditor;
     plotlab::project project;
     std::optional<std::filesystem::path> current_project_file{};
 
@@ -57,16 +59,16 @@ auto main() -> int {
 
             if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
                 if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
-                    plotrender.handle_event(mouseButtonPressed, project);
+                    ploteditor.handle_event(mouseButtonPressed, project);
                 }
             }
             if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
                 if (mouseButtonReleased->button == sf::Mouse::Button::Left) {
-                    plotrender.handle_event(mouseButtonReleased, project);
+                    ploteditor.handle_event(mouseButtonReleased, project);
                 }
             }
             if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
-                plotrender.handle_event(mouseMoved, project);
+                ploteditor.handle_event(mouseMoved, project);
             }
 
             if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {

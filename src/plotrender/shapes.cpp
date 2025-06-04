@@ -34,11 +34,7 @@ void PlotRender::draw_circle(sf::RenderWindow& window, int x, int y, sf::Color c
 }
 
 void PlotRender::draw_point(sf::RenderWindow& window, point* point) {
-    if (point == held) {
-        draw_circle(window, point->x, point->y, sf::Color::Yellow);
-    } else {
-        draw_circle(window, point->x, point->y);
-    }
+    draw_circle(window, point->x, point->y);
 }
 
 void PlotRender::draw_arrow(sf::RenderWindow& window, int ax, int ay, int bx, int by, sf::Color color) {

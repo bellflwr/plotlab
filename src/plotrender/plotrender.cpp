@@ -29,10 +29,6 @@ void PlotRender::render(sf::RenderWindow& window, project& proj) {
     for (auto dir : proj.directives) {
         render_directive(window, dir);
     }
-
-    if (is_holding) {
-        draw_circle(window, held->x, held->y, sf::Color::Yellow);
-    }
 }
 
 void PlotRender::render_directive(sf::RenderWindow& window, directive& dir) {
