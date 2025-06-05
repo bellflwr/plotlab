@@ -12,6 +12,9 @@
 
 namespace plotlab {
 
+auto get_closest_point(project& proj, const sf::Vector2i& pos, point*& closest) -> bool;
+auto get_closest_directive_index(project& proj, const sf::Vector2i& pos, int& closest_idx) -> bool;
+
 class PlotEditor {
   private:
     bool is_holding{};
@@ -19,6 +22,8 @@ class PlotEditor {
 
     void attempt_point_move(project& proj, const sf::Vector2i& mouse_pos);
     void attempt_point_create(project& proj, const sf::Vector2i& mouse_pos);
+    void attempt_handle_move_or_create(project& proj, const sf::Vector2i& mouse_pos);
+    void attempt_prev_handle_move_or_create(project& proj, const sf::Vector2i& mouse_pos);
 
     std::array<sf::Vertex, 2> line;
 
