@@ -9,6 +9,7 @@ project(
 src = [
   'src/directives.cpp',
   'src/main.cpp',
+  'src/app.cpp',
   'src/plotlist.cpp',
   'src/plotrender/plotrender.cpp',
   'src/plotrender/shapes.cpp',
