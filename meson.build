@@ -13,6 +13,7 @@ src = [
   'src/plotrender/plotrender.cpp',
   'src/plotrender/shapes.cpp',
   'src/editor/plot_editor.cpp',
+  'src/editor/events.cpp',
   'src/editor/finder.cpp',
   'src/point.cpp',
   'src/pointlist.cpp',

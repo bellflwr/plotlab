@@ -1,5 +1,5 @@
 #include "directives.hpp"
-#include "ploteditor.hpp"
+#include "plot_editor.hpp"
 #include "project.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <limits>

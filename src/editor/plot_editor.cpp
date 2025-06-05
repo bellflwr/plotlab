@@ -1,44 +1,12 @@
+#include "plot_editor.hpp"
 #include "directives.hpp"
-#include "ploteditor.hpp"
 #include "project.hpp"
 #include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Keyboard.hpp>
 #include <variant>
 
 namespace plotlab {
 
 PlotEditor::PlotEditor() = default;
-
-void PlotEditor::handle_event(const sf::Event::MouseButtonPressed* event, project& proj) {
-    bool shift = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift);
-    bool ctrl = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl);
-
-    if (ctrl) {
-        if (shift) {
-            attempt_prev_handle_move_or_create(proj, event->position);
-        } else {
-            attempt_handle_move_or_create(proj, event->position);
-        }
-    } else {
-        if (shift) {
-            attempt_point_create(proj, event->position);
-        } else {
-            attempt_point_move(proj, event->position);
-        }
-    }
-}
-
-void PlotEditor::handle_event(const sf::Event::MouseButtonReleased* /*event*/, project& /*proj*/) {
-    is_holding = false;
-    held = nullptr;
-}
-
-void PlotEditor::handle_event(const sf::Event::MouseMoved* event, project& /*proj*/) {
-    if (is_holding) {
-        held->x = event->position.x;
-        held->y = event->position.y;
-    }
-}
 
 void PlotEditor::attempt_point_move(project& proj, const sf::Vector2i& mouse_pos) {
     point* closest = nullptr;

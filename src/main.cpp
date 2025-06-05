@@ -1,6 +1,6 @@
 #include "imgui-SFML.h"
 #include "imgui.h"
-#include "ploteditor.hpp"
+#include "plot_editor.hpp"
 #include "plotlist.hpp"
 #include "plotrender.hpp"
 #include "pointlist.hpp"
