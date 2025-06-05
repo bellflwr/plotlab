@@ -2,11 +2,7 @@
 #include "imgui-SFML.h"
 #include "imgui.h"
 
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/Window/Event.hpp>
 
 const int WIDTH = 1200;
 const int HEIGHT = 600;
@@ -20,5 +16,8 @@ auto main() -> int {
     ImGuiIO& im_io = ImGui::GetIO();
 
     plotlab::App app(&window, &im_io);
+
     app.start();
+
+    ImGui::SFML::Shutdown();
 }

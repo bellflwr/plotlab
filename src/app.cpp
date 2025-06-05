@@ -18,8 +18,6 @@ void App::start() {
     while (window->isOpen()) {
         update();
     }
-
-    ImGui::SFML::Shutdown();
 }
 
 void App::update() {
@@ -28,18 +26,21 @@ void App::update() {
     ImGui::SFML::Update(*window, deltaClock.restart());
 
     ImGui::DockSpaceOverViewport(0, NULL, ImGuiDockNodeFlags_PassthruCentralNode);
+    ImGui::ShowMetricsWindow();
 
     plotlist.draw_window();
     if (plotlist.should_change_project()) {
         current_project_file = plotlist.get_open_project().path();
         plotlab::read_project_from_file(plotlist.get_open_project(), project);
     }
+
     pointlist.draw_window(project);
-    ImGui::ShowMetricsWindow();
 
     window->clear();
+
     plotrender.render(*window, project);
     ImGui::SFML::Render(*window);
+
     window->display();
 }
 
